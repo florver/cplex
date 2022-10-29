@@ -63,7 +63,7 @@ def add_constraint_matrix(my_problem, data):
       values.append(item.weight)
     
     row = [indices,values]
-    my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=data.b)
+    my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[data.b])
 
 def populate_by_row(my_problem, data):
 
