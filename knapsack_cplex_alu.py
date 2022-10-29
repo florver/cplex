@@ -57,11 +57,13 @@ def add_constraint_matrix(my_problem, data):
     # elemento.
     
     # Agregamos restriccion de capacidad.
-    indices = ...
-    values = ...
+    indices = list(range(data.n))
+    values = []
+    for item in data.items:
+      values.append(item.weight)
     
     row = [indices,values]
-    my_problem.linear_constraints.add(lin_expr=[row], senses=[...], rhs=[...])
+    my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=data.b)
 
 def populate_by_row(my_problem, data):
 
@@ -71,7 +73,9 @@ def populate_by_row(my_problem, data):
     # una forma simple es definirlas en funcion de vector de coeficientes 
     # con los costos de la funcion objetivo (obj = c), el de cotas inferiores (lb = 0),
     # y el de cotas superiores (ub = maxp).
-    coeficientes_funcion_objetivo = ...
+    coeficientes_funcion_objetivo = []
+    for item in data.items:
+      coeficientes_funcion_objetivo.append(item.value)
     my_problem.variables.add(obj = coeficientes_funcion_objetivo, lb = [0]*data.n, ub = [1]*data.n, types=['B']*data.n) 
 
     # Seteamos problema de minimizacion.
