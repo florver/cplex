@@ -211,7 +211,7 @@ def solve_lp(my_problem, data):
 
     x = my_problem.solution.get_values(0, prob_lp.variables.get_num()-1)
     for j in range(prob_lp.variables.get_num()):
-        print "Buy %d = %17.10g" % (j, x[j])
+      print(j, x[j])
 
     # Imprimimos las variables usadas.
 #    for i in range(len(x_variables)):
