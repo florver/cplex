@@ -209,8 +209,8 @@ def solve_lp(my_problem, data):
     print('Funcion objetivo: ',objective_value)
     print('Status solucion: ',status_string,'(' + str(status) + ')')
 
-    x = my_problem.solution.get_values(0, prob_lp.variables.get_num()-1)
-    for j in range(prob_lp.variables.get_num()):
+    x = my_problem.solution.get_values(0, my_problem.variables.get_num()-1)
+    for j in range(my_problem.variables.get_num()):
       print(j, x[j])
 
     # Imprimimos las variables usadas.
