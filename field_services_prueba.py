@@ -129,7 +129,7 @@ def add_constraint_matrix(my_problem, data):
 
 
      # Restricción "Ninǵun trabajador puede trabajar los 5 turnos de un día"
-     
+
       for j in range(data.cantidad_trabajadores):
             for d in range(data.dias):
               variables_restriccion = []
@@ -142,6 +142,16 @@ def add_constraint_matrix(my_problem, data):
                   row = [variables_restriccion + variables_restriccion_z, values]
                   my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[0.0])
 
+      
+      # Restricción "Ninǵun trabajador puede trabajar los 6 días de la semana"
+
+      for j in range(data.cantidad_trabajadores):
+        variables_restriccion_z = []
+        for d in range(data.dias):
+          variables_restriccion_z.append('z'+'_'+str(j)+'_'+str(d))
+          values = [1]*len(variables_restriccion_z)
+          row = [variables_restriccion_z, values]
+          my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[5.0])
 
 def populate_by_row(my_problem, data):
 
