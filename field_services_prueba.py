@@ -106,13 +106,6 @@ def get_instance_data():
     return instance
     
 
-def add_constraint_matrix(my_problem, data):
-    
-    # Restriccion generica
-    #indices = 
-    #values = []
-    #row = [indices,values]
-    #my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[])
 
 def add_constraint_matrix(my_problem, data):
     
