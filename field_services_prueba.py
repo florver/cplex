@@ -116,17 +116,7 @@ def add_constraint_matrix(my_problem, data):
     #my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[])
 
     
-    # Restricción que no se haga 2 ordenes en mismo turno y día
 
-      for n in range(len(data.ordenes)):
-        variables_restriccion = []
-        for j in range(data.cantidad_trabajadores):
-          for d in range(data.dias):
-            for t in range(data.turnos):
-              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
-              values = [1]*len(variables_restriccion)
-              row = [variables_restriccion, values]
-              my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])    
 
 
 
