@@ -220,6 +220,38 @@ def add_constraint_matrix(my_problem, data):
             else:
               continue
 
+
+      # Restricción “Hay pares de órdenes de trabajo que no pueden ser satisfechas en turnos consecutivos de un trabajador”
+
+      for n in range(len(data.ordenes_conflictivas)):
+        for d in range(data.dias):
+          for t in range(data.turnos):
+            for j in range(data.cantidad_trabajadores):
+              variables_restriccion = []
+              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_conflictivas[n][0]))
+              variables_restriccion_lambda = []
+              variables_restriccion_lambda.append('lambda'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_conflictivas[n][0]))
+              values = [1]*len(variables_restriccion) + [-1]*len(variables_restriccion_lambda)
+              row = [variables_restriccion + variables_restriccion_lambda, values]
+              my_problem.linear_constraints.add(lin_expr=[row], senses=['G'], rhs=[0.0])
+
+
+      for n in range(len(data.ordenes_conflictivas)):
+              for d in range(data.dias):
+                for t in range(data.turnos):
+                  for j in range(data.cantidad_trabajadores):
+                    if t < data.turnos-1:
+                      variables_restriccion = []
+                      variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t+1)+'_'+str(data.ordenes_conflictivas[n][1]))
+                      variables_restriccion_lambda = []
+                      variables_restriccion_lambda.append('lambda'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_conflictivas[n][0]))
+                      values = [1]*len(variables_restriccion) + [-0.5]*len(variables_restriccion_lambda)
+                      row = [variables_restriccion + variables_restriccion_lambda, values]
+                      my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[0.0])
+                    else:
+                      continue
+
+
       # Restricciones necesarias para salario de los trabajadores
     
       # Equivalencia entre v y x
