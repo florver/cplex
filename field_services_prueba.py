@@ -153,19 +153,26 @@ def add_constraint_matrix(my_problem, data):
               values = [1]*len(variables_restriccion)
               row = [variables_restriccion, values]
               my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
-              
 
-      # Restricción "Una orden de trabajo debe tener asignada sus To trabajadores en un mismo turno para poder ser resuelta"
 
-      for n in range(len(data.ordenes)):
-        variables_restriccion = []
-        for j in range(data.cantidad_trabajadores):
-          for d in range(data.dias):
-            for t in range(data.turnos):
-              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
-              values = [1]*len(variables_restriccion)
-              row = [variables_restriccion, values]
-              my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[data.ordenes[n].trabajadores_necesarios])              
+      # Restricción “Diferencia entre el trabajador con más órdenes asignadas y el trabajador con menos órdenes no puede ser mayor a 10"
+
+      for j in range(data.cantidad_trabajadores):
+        variables_costos = []
+        for k in range(len(data.costos)):
+          variables_costos.append('x'+'_'+str(j)+'_'+str(k))
+          for jj in range(data.cantidad_trabajadores):
+            if j != jj:
+              variables_costos_2 = []
+              for kk in range(len(data.costos)):
+                variables_costos_2.append('x'+'_'+str(jj)+'_'+str(kk))
+                values = [1]*len(variables_costos) + [-1]*len(variables_costos_2)
+                #variables_costos_final = [variables_costos, variables_costos_2]
+                row = [variables_costos + variables_costos_2, values]
+                my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[10])
+                my_problem.linear_constraints.add(lin_expr=[row], senses=['G'], rhs=[-10])
+              else:
+                continue              
 
 
       # Restricciones necesarias para salario de los trabajadores
