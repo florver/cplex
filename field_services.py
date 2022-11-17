@@ -286,27 +286,27 @@ def add_constraint_matrix(my_problem, data):
     
       # Equivalencia entre v y x
 
-        for j in range(data.cantidad_trabajadores):
-                variables_costos_0 = []
-                variables_costos_0.append('x'+'_'+str(j)+'_'+str(0))
-                variables_costos_1 = []
-                variables_costos_1.append('x'+'_'+str(j)+'_'+str(1))
-                variables_costos_2 = []
-                variables_costos_2.append('x'+'_'+str(j)+'_'+str(2))
-                variables_costos_3 = []
-                variables_costos_3.append('x'+'_'+str(j)+'_'+str(3))
-                variables_restriccion = [] 
-                for d in range(data.dias):
-                  for t in range(data.turnos):
-                    for n in range(len(data.ordenes)):
-                      variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
-                      values = [1]*len(variables_restriccion) + [-1]*len(variables_costos_0) + [-1]*len(variables_costos_1) + [-1]*len(variables_costos_2) + [-1]*len(variables_costos_3)
-                      row = [variables_restriccion + variables_costos_0 + variables_costos_1 + variables_costos_2 + variables_costos_3, values]
-                      my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])      
+      for j in range(data.cantidad_trabajadores):
+            variables_costos_0 = []
+            variables_costos_0.append('x'+'_'+str(j)+'_'+str(0))
+            variables_costos_1 = []
+            variables_costos_1.append('x'+'_'+str(j)+'_'+str(1))
+            variables_costos_2 = []
+            variables_costos_2.append('x'+'_'+str(j)+'_'+str(2))
+            variables_costos_3 = []
+            variables_costos_3.append('x'+'_'+str(j)+'_'+str(3))
+            variables_restriccion = [] 
+            for d in range(data.dias):
+              for t in range(data.turnos):
+                for n in range(len(data.ordenes)):
+                  variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
+                  values = [1]*len(variables_restriccion) + [-1]*len(variables_costos_0) + [-1]*len(variables_costos_1) + [-1]*len(variables_costos_2) + [-1]*len(variables_costos_3)
+                  row = [variables_restriccion + variables_costos_0 + variables_costos_1 + variables_costos_2 + variables_costos_3, values]
+                  my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])     
 
 
     #1er tramo
-        for j in range(data.cantidad_trabajadores):
+      for j in range(data.cantidad_trabajadores):
                 variables_costos = []
                 variables_costos.append('x'+'_'+str(j)+'_'+str(0))
                 variables_w = []
@@ -320,7 +320,7 @@ def add_constraint_matrix(my_problem, data):
 
 
       #2do tramo
-        for j in range(data.cantidad_trabajadores):
+      for j in range(data.cantidad_trabajadores):
                         variables_costos = []
                         variables_costos.append('x'+'_'+str(j)+'_'+str(1))
                         variables_w_0 = []
@@ -336,7 +336,7 @@ def add_constraint_matrix(my_problem, data):
 
 
       #3er tramo
-        for j in range(data.cantidad_trabajadores):
+      for j in range(data.cantidad_trabajadores):
                         variables_costos = []
                         variables_costos.append('x'+'_'+str(j)+'_'+str(2))
                         variables_w_1 = []
@@ -351,7 +351,7 @@ def add_constraint_matrix(my_problem, data):
                         my_problem.linear_constraints.add(lin_expr=[row_2], senses=['L'], rhs=[0.0])
 
       #4to tramo
-        for j in range(data.cantidad_trabajadores):
+      for j in range(data.cantidad_trabajadores):
                         variables_costos = []
                         variables_costos.append('x'+'_'+str(j)+'_'+str(3))
                         variables_w_2 = []
@@ -368,7 +368,7 @@ def add_constraint_matrix(my_problem, data):
 
         #Restricciones de w_j_k
       
-        for j in range(data.cantidad_trabajadores):
+      for j in range(data.cantidad_trabajadores):
           variables_w = []
           for k in range(len(data.costos)):
             variables_w.append('w'+'_'+str(j)+'_'+str(k))
