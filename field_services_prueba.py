@@ -437,7 +437,7 @@ def populate_by_row(my_problem, data):
     for n in range(len(data.ordenes)):
       variables_gamma.append('gamma'+'_'+str(n))
 
-    my_problem.variables.add([0.0] * len(variables_gamma), lb = [0] * len(variables_gamma), ub = [1]*len(variables_gamma), types= ['B']*len(variables_gamma), names = variables_gamma))
+    my_problem.variables.add([0.0] * len(variables_gamma), lb = [0] * len(variables_gamma), ub = [1]*len(variables_gamma), types= ['B']*len(variables_gamma), names = variables_gamma)
 
     # Seteamos direccion del problema
     my_problem.objective.set_sense(my_problem.objective.sense.maximize)
