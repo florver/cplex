@@ -159,13 +159,15 @@ def add_constraint_matrix(my_problem, data):
 
       for n in range(len(data.ordenes)):
         variables_restriccion = []
+        variables_gamma = []
+        variables_gamma.append('gamma'+'_'+str(n))
         for j in range(data.cantidad_trabajadores):
           for d in range(data.dias):
             for t in range(data.turnos):
               variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
-              values = [1]*len(variables_restriccion)
-              row = [variables_restriccion, values]
-              my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[float(data.ordenes[n].trabajadores_necesarios)])
+              values = [1]*len(variables_restriccion) + [-1] * (data.ordenes[n].trabajadores_necesarios)
+              row = [variables_restriccion + variables_gamma, values]
+              my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
 
 
 
@@ -427,6 +429,15 @@ def populate_by_row(my_problem, data):
         variables_w.append('w'+'_'+str(j)+'_'+str(k))
         
     my_problem.variables.add([0.0] * len(variables_w), lb = [0]*len(variables_w), ub = [1]*len(variables_w), types= ['B']*len(variables_w), names = variables_w)
+
+
+    # Columna para gamma_n
+
+    variables_gamma = []
+    for n in range(len(data.ordenes)):
+      variables_gamma.append('gamma'+'_'+str(n))
+
+    my_problem.variables.add([0.0] * len(variables_gamma), lb = [0] * len(variables_gamma), ub = [1]*len(variables_gamma), types= ['B']*len(variables_gamma), names = variables_gamma))
 
     # Seteamos direccion del problema
     my_problem.objective.set_sense(my_problem.objective.sense.maximize)
