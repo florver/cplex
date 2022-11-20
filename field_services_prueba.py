@@ -120,7 +120,6 @@ def add_constraint_matrix(my_problem, data):
       for n in range(len(data.ordenes)):
         variables_restriccion = []
         for j in range(data.cantidad_trabajadores):
-          variables_restriccion = []
           for d in range(data.dias):
             for t in range(data.turnos):
               variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
@@ -128,7 +127,6 @@ def add_constraint_matrix(my_problem, data):
               row = [variables_restriccion, values]
               my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])   
 
-  
 
       # Restricción una orden no se puede hacer 2 veces
 
