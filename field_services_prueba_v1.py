@@ -132,8 +132,8 @@ def add_constraint_matrix(my_problem, data):
 
       for n in range(len(data.ordenes)):
         variables_gamma = []
-        for d in range(data.dias):
-            for t in range(data.turnos):
+        for t in range(data.turnos):
+            for t in range(data.dias):
               variables_gamma.append('gamma'+'_'+str(t)+'_'+str(d)+'_'+str(n))
               values = [1]*len(variables_gamma)
               row = [variables_gamma, values]
