@@ -117,7 +117,7 @@ def add_constraint_matrix(my_problem, data):
 
     # Restricción que no se haga 2 ordenes en mismo turno y día
 
-    for n in range(len(data.ordenes)):
+      for n in range(len(data.ordenes)):
         variables_restriccion = []
         for j in range(data.cantidad_trabajadores):
           variables_restriccion = []
