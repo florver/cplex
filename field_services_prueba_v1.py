@@ -134,7 +134,7 @@ def add_constraint_matrix(my_problem, data):
         variables_gamma = []
         for d in range(data.dias):
             for t in range(data.turnos):
-              variables_gamma.append('gamma'+'_'+str(n)+'_'+str(d)+'_'+str(t))
+              variables_gamma.append('gamma'+'_'+str(t)+'_'+str(d)+'_'+str(n))
               values = [1]*len(variables_gamma)
               row = [variables_gamma, values]
               my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
@@ -211,10 +211,10 @@ def populate_by_row(my_problem, data):
     # Columna para gamma_n
 
     variables_gamma = []
-    for n in range(len(data.ordenes)):
+    for t in range(data.turnos):
       for d in range(data.dias):
-        for t in range(data.turnos):
-          variables_gamma.append('gamma'+'_'+str(n)+'_'+str(d)+'_'+str(t))
+        for n in range(len(data.ordenes)):
+          variables_gamma.append('gamma'+'_'+str(t)+'_'+str(d)+'_'+str(n))
 
     my_problem.variables.add([0.0] * len(variables_gamma), lb = [0] * len(variables_gamma), ub = [1]*len(variables_gamma), types= ['B']*len(variables_gamma), names = variables_gamma)
 
