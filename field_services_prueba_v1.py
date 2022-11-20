@@ -128,19 +128,6 @@ def add_constraint_matrix(my_problem, data):
               row = [variables_gamma, values]
               my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
 
-      for t in range(data.turnos):
-        for d in range(data.dias):
-          variables_gamma = []
-          for n in range(len(data.ordenes)):
-            variables_restriccion = []
-            for j in range(data.cantidad_trabajadores):
-              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
-              values = [1]*len(variables_restriccion)
-            variables_gamma.append('gamma'+'_'+str(t)+'_'+str(d)+'_'+str(n))
-            values_gamma = [-1.0]*len(variables_gamma)
-            row = [variables_restriccion + variables_gamma, values + values_gamma]
-            my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
-
 
   
 def populate_by_row(my_problem, data):
