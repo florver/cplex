@@ -165,8 +165,9 @@ def populate_by_row(my_problem, data):
         for t in range(data.turnos):
           for n in range(len(data.ordenes)):
             coeficientes_beneficio.append(data.ordenes[n].beneficio)
-    coeficientes_costo = list(np.tile(data.costos, data.cantidad_trabajadores))
-    coeficientes_funcion_objetivo = (coeficientes_beneficio + coeficientes_costo)
+#    coeficientes_costo = list(np.tile(data.costos, data.cantidad_trabajadores))
+    coeficientes_funcion_objetivo = coeficientes_beneficio
+                                     #+ coeficientes_costo)
     
     variables_beneficios = []
     for j in range(data.cantidad_trabajadores): 
@@ -175,14 +176,16 @@ def populate_by_row(my_problem, data):
           for n in range(len(data.ordenes)):
             variables_beneficios.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
     
-    variables_costos = []
-    for j in range(data.cantidad_trabajadores):
-      for k in range(len(data.costos)):
-        variables_costos.append('x'+'_'+str(j)+'_'+str(k))
+   # variables_costos = []
+   # for j in range(data.cantidad_trabajadores):
+   #   for k in range(len(data.costos)):
+    #    variables_costos.append('x'+'_'+str(j)+'_'+str(k))
         
-    my_problem.variables.add(obj = coeficientes_funcion_objetivo, lb =[0]*len(coeficientes_beneficio) + [0]*len(coeficientes_costo), ub = [1]*len(coeficientes_beneficio) + list(np.tile(data.trozos, data.cantidad_trabajadores))
-                             , types=['B']*len(coeficientes_beneficio) + ['I']*len(coeficientes_costo), names = (variables_beneficios + variables_costos))
+   # my_problem.variables.add(obj = coeficientes_funcion_objetivo, lb =[0]*len(coeficientes_beneficio) + [0]*len(coeficientes_costo), ub = [1]*len(coeficientes_beneficio) + list(np.tile(data.trozos, data.cantidad_trabajadores))
+                         #    , types=['B']*len(coeficientes_beneficio) + ['I']*len(coeficientes_costo), names = (variables_beneficios + variables_costos))
 
+    my_problem.variables.add(obj = coeficientes_funcion_objetivo, lb =[0]*len(coeficientes_beneficio), ub = [1]*len(coeficientes_beneficio)
+                             , types=['B']*len(coeficientes_beneficio), names = variables_beneficios)
 
     # Columna para Z_j_d
     variable_z = []
