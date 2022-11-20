@@ -131,14 +131,27 @@ def add_constraint_matrix(my_problem, data):
       # Restricción una orden no se puede hacer 2 veces
 
       for n in range(len(data.ordenes)):
-        for j in range(data.cantidad_trabajadores):
-          variables_restriccion = []
-          for d in range(data.dias):
+        variables_gamma = []
+        for d in range(data.dias):
             for t in range(data.turnos):
-              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
+              variables_restriccion.append('gamma'+'_'+str(n)+'_'+str(d)+'_'+str(k))
               values = [1]*len(variables_restriccion)
               row = [variables_restriccion, values]
               my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
+
+
+      for n in range(len(data.ordenes)):
+        variables_restriccion = []
+        variables_gamma = []
+        variables_gamma.append('gamma'+'_'+str(n))
+        for j in range(data.cantidad_trabajadores):
+          for d in range(data.dias):
+            for t in range(data.turnos):
+              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
+              values = [1]*len(variables_restriccion) + [-1] * (data.ordenes[n].trabajadores_necesarios)
+              row = [variables_restriccion + variables_gamma, values]
+              my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
+
 
 
   
@@ -212,7 +225,9 @@ def populate_by_row(my_problem, data):
 
     variables_gamma = []
     for n in range(len(data.ordenes)):
-      variables_gamma.append('gamma'+'_'+str(n))
+      for d in range(data.dias):
+        for t in range(data.turnos):
+          variables_gamma.append('gamma'+'_'+str(n)+'_'+str(d)+'_'+str(k))
 
     my_problem.variables.add([0.0] * len(variables_gamma), lb = [0] * len(variables_gamma), ub = [1]*len(variables_gamma), types= ['B']*len(variables_gamma), names = variables_gamma)
 
