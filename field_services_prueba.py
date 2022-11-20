@@ -115,7 +115,21 @@ def add_constraint_matrix(my_problem, data):
     #row = [indices,values]
     #my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[])
 
-    
+    # Restricción que no se haga 2 ordenes en mismo turno y día
+
+    for n in range(len(data.ordenes)):
+        variables_restriccion = []
+        for j in range(data.cantidad_trabajadores):
+          variables_restriccion = []
+          for d in range(data.dias):
+            for t in range(data.turnos):
+              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
+              values = [1]*len(variables_restriccion)
+              row = [variables_restriccion, values]
+              my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])   
+
+  
+
      # Restricción "Ninǵun trabajador puede trabajar los 5 turnos de un día"
 
       for j in range(data.cantidad_trabajadores):
@@ -155,19 +169,7 @@ def add_constraint_matrix(my_problem, data):
               my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
 
 
-      # Restricción "Una orden de trabajo debe tener asignada sus To trabajadores en un mismo turno para poder ser resuelta"
 
-      for n in range(len(data.ordenes)):
-        variables_restriccion = []
-        variables_gamma = []
-        variables_gamma.append('gamma'+'_'+str(n))
-        for j in range(data.cantidad_trabajadores):
-          for d in range(data.dias):
-            for t in range(data.turnos):
-              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
-              values = [1]*len(variables_restriccion) + [-1] * (data.ordenes[n].trabajadores_necesarios)
-              row = [variables_restriccion + variables_gamma, values]
-              my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
 
 
 
@@ -192,77 +194,6 @@ def add_constraint_matrix(my_problem, data):
                 continue              
 
 
-       # Restricción “Existen algunos pares de  ́ordenes de trabajo correlativas”  
-
-
-      for n in range(len(data.ordenes_correlativas)):
-        for d in range(data.dias):
-          variables_restriccion = []
-          for j in range(data.cantidad_trabajadores):
-            variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(4)+'_'+str(data.ordenes_correlativas[n][0]))
-            values = [1]*len(variables_restriccion) 
-            row = [variables_restriccion, values]
-            my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[0.0])
-
-
-      for n in range(len(data.ordenes_correlativas)):
-        for d in range(data.dias):
-          for t in range(data.turnos):
-            variables_restriccion_delta = []
-            variables_restriccion_delta.append('delta'+'_'+str(data.ordenes_correlativas[n][0])+'_'+str(d)+'_'+str(t))
-            variables_restriccion = []
-            for j in range(data.cantidad_trabajadores):
-              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_correlativas[n][0]))
-              values = [1]*len(variables_restriccion) + [-1.0] * data.ordenes[data.ordenes_correlativas[n][0]].trabajadores_necesarios * len(variables_restriccion_delta)
-              row = [variables_restriccion + variables_restriccion_delta, values]
-              my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[0.0])
-
-
-      for n in range(len(data.ordenes_correlativas)):
-        for d in range(data.dias):
-          for t in range(data.turnos):
-            if t < data.turnos-1:
-              variables_restriccion_delta = []
-              variables_restriccion_delta.append('delta'+'_'+str(data.ordenes_correlativas[n][0])+'_'+str(d)+'_'+str(t))
-              variables_restriccion = []
-              for j in range(data.cantidad_trabajadores):
-                variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t+1)+'_'+str(data.ordenes_correlativas[n][1]))
-                values = [1]*len(variables_restriccion) + [-1.0] * data.ordenes[data.ordenes_correlativas[n][1]].trabajadores_necesarios * len(variables_restriccion_delta)
-                row = [variables_restriccion + variables_restriccion_delta, values]
-                my_problem.linear_constraints.add(lin_expr=[row], senses=['G'], rhs=[0.0])
-            else:
-              continue
-
-
-      # Restricción “Hay pares de órdenes de trabajo que no pueden ser satisfechas en turnos consecutivos de un trabajador”
-
-      for n in range(len(data.ordenes_conflictivas)):
-        for d in range(data.dias):
-          for t in range(data.turnos):
-            for j in range(data.cantidad_trabajadores):
-              variables_restriccion = []
-              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_conflictivas[n][0]))
-              variables_restriccion_lambda = []
-              variables_restriccion_lambda.append('lambda'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_conflictivas[n][0]))
-              values = [1]*len(variables_restriccion) + [-1]*len(variables_restriccion_lambda)
-              row = [variables_restriccion + variables_restriccion_lambda, values]
-              my_problem.linear_constraints.add(lin_expr=[row], senses=['G'], rhs=[0.0])
-
-
-      for n in range(len(data.ordenes_conflictivas)):
-              for d in range(data.dias):
-                for t in range(data.turnos):
-                  for j in range(data.cantidad_trabajadores):
-                    if t < data.turnos-1:
-                      variables_restriccion = []
-                      variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t+1)+'_'+str(data.ordenes_conflictivas[n][1]))
-                      variables_restriccion_lambda = []
-                      variables_restriccion_lambda.append('lambda'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_conflictivas[n][0]))
-                      values = [1]*len(variables_restriccion) + [-0.5]*len(variables_restriccion_lambda)
-                      row = [variables_restriccion + variables_restriccion_lambda, values]
-                      my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[0.0])
-                    else:
-                      continue
 
 
       # Restricciones necesarias para salario de los trabajadores
