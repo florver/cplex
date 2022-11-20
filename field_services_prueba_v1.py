@@ -134,9 +134,9 @@ def add_constraint_matrix(my_problem, data):
         variables_gamma = []
         for d in range(data.dias):
             for t in range(data.turnos):
-              variables_restriccion.append('gamma'+'_'+str(n)+'_'+str(d)+'_'+str(t))
-              values = [1]*len(variables_restriccion)
-              row = [variables_restriccion, values]
+              variables_gamma.append('gamma'+'_'+str(n)+'_'+str(d)+'_'+str(t))
+              values = [1]*len(variables_gamma)
+              row = [variables_gamma, values]
               my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
 
 
