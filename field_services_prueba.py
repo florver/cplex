@@ -114,19 +114,7 @@ def add_constraint_matrix(my_problem, data):
     #values = []
     #row = [indices,values]
     #my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[])
-
-    # Restricción que no se haga 2 ordenes en mismo turno y día
-
-      for n in range(len(data.ordenes)):
-        variables_restriccion = []
-        for j in range(data.cantidad_trabajadores):
-          for d in range(data.dias):
-            for t in range(data.turnos):
-              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
-              values = [1]*len(variables_restriccion)
-              row = [variables_restriccion, values]
-              my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])   
-
+   
 
       # Restricción una orden no se puede hacer 2 veces
 
@@ -140,6 +128,32 @@ def add_constraint_matrix(my_problem, data):
               row = [variables_restriccion, values]
               my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
 
+      # Restricción que no se haga 2 ordenes en mismo turno y día             
+
+      
+      for d in range(data.dias):
+        for t in range(data.turnos):
+          variables_epsilon = []
+          for n in range(len(data.ordenes)):
+            variables_epsilon.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
+            values = [1]*len(variables_epsilon)
+            row = [variables_epsilon, values]
+            my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
+
+
+      # Restricción "Una orden de trabajo debe tener asignada sus To trabajadores en un mismo turno para poder ser resuelta"      
+      
+      for n in range(len(data.ordenes)):
+        variables_restriccion = []
+        for j in range(data.cantidad_trabajadores):
+          variables_epsilon = []
+          for d in range(data.dias):
+            for t in range(data.turnos):
+              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
+              variables_epsilon.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
+              values = [1]*len(variables_restriccion) + [-1] * (data.ordenes[n].trabajadores_necesarios) * len(variables_epsilon)
+              row = [variables_restriccion + variables_epsilon, values]
+              my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])            
 
 
 def populate_by_row(my_problem, data):
@@ -210,11 +224,22 @@ def populate_by_row(my_problem, data):
 
     # Columna para gamma_n
 
-    variables_gamma = []
-    for n in range(len(data.ordenes)):
-      variables_gamma.append('gamma'+'_'+str(n))
+   # variables_gamma = []
+   # for n in range(len(data.ordenes)):
+   #   variables_gamma.append('gamma'+'_'+str(n))
 
-    my_problem.variables.add([0.0] * len(variables_gamma), lb = [0] * len(variables_gamma), ub = [1]*len(variables_gamma), types= ['B']*len(variables_gamma), names = variables_gamma)
+   # my_problem.variables.add([0.0] * len(variables_gamma), lb = [0] * len(variables_gamma), ub = [1]*len(variables_gamma), types= ['B']*len(variables_gamma), names = variables_gamma)
+
+    # Columna para epsilon_n
+
+    variables_epsilon = []
+    for d in range(data.dias):
+      for t in range(data.turnos):
+        for n in range(len(data.ordenes)):
+          variables_epsilon.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
+
+    my_problem.variables.add([0.0] * len(variables_epsilon), lb = [0] * len(variables_epsilon), ub = [1]*len(variables_epsilon), types= ['B']*len(variables_epsilon), names = variables_epsilon)
+
 
     # Seteamos direccion del problema
     my_problem.objective.set_sense(my_problem.objective.sense.maximize)
