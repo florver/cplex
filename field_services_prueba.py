@@ -241,7 +241,19 @@ def add_constraint_matrix(my_problem, data):
                     else:
                       continue
 
+      # Restricción "Una orden de trabajo debe tener asignada sus To trabajadores en un mismo turno para poder ser resuelta"
 
+      for n in range(len(data.ordenes)):
+        variables_restriccion = []
+        variables_gamma = []
+        variables_gamma.append('gamma'+'_'+str(n))
+        for j in range(data.cantidad_trabajadores):
+          for d in range(data.dias):
+            for t in range(data.turnos):
+              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
+              values = [1]*len(variables_restriccion) + [-1] * (data.ordenes[n].trabajadores_necesarios)
+              row = [variables_restriccion + variables_gamma, values]
+              my_problem.linear_constraints.add(lin_expr=[row], senses=['G'], rhs=[0.0])
 
 
 
