@@ -253,7 +253,7 @@ def add_constraint_matrix(my_problem, data):
               variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
               values = [1]*len(variables_restriccion) + [-1] * (data.ordenes[n].trabajadores_necesarios)
               row = [variables_restriccion + variables_gamma, values]
-              my_problem.linear_constraints.add(lin_expr=[row], senses=['G'], rhs=[0.0])
+              my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
 
 
 
