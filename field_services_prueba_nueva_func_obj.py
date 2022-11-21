@@ -128,6 +128,20 @@ def add_constraint_matrix(my_problem, data):
 #              row = [variables_restriccion, values]
 #              my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
 
+
+      # Restricción equivalencia de gammas y epsilon.
+
+      for n in range(len(data.ordenes)):
+        variables_epsilon = []
+        for d in range(data.dias):
+          for t in range(data.turnos):
+            variables_gamma = []
+            variables_gamma.append('gamma'+'_'+str(n))
+            variables_epsilon.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
+            values = [1]*len(variables_gamma) + [-1]*len(variables_epsilon)
+            row = [variables_gamma + variables_epsilon, values]
+            my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
+
       # Restricción que no se haga 2 ordenes en mismo turno y día             
 
       
@@ -194,41 +208,41 @@ def populate_by_row(my_problem, data):
  #                            , types=['B']*len(coeficientes_beneficio), names = variables_beneficios)
 
     # Columna para Z_j_d
-    variable_z = []
-    for j in range(data.cantidad_trabajadores):
-      for d in range(data.dias):
-        variable_z.append('z'+'_'+str(j)+'_'+str(d))
+#    variable_z = []
+#    for j in range(data.cantidad_trabajadores):
+#      for d in range(data.dias):
+#        variable_z.append('z'+'_'+str(j)+'_'+str(d))
 
-    my_problem.variables.add(obj = [0.0] * len(variable_z), lb = [0]*len(variable_z), ub = [1]*len(variable_z), types= ['B']*len(variable_z), names = variable_z)
+#    my_problem.variables.add(obj = [0.0] * len(variable_z), lb = [0]*len(variable_z), ub = [1]*len(variable_z), types= ['B']*len(variable_z), names = variable_z)
 
 
     # Columna para delta_n_d_t
-    variable_delta = []
-    for n in range(len(data.ordenes_correlativas)):
-      for d in range(data.dias):
-        for t in range(data.turnos):
-          variable_delta.append('delta'+'_'+str(data.ordenes_correlativas[n][0])+'_'+str(d)+'_'+str(t))
+#    variable_delta = []
+#    for n in range(len(data.ordenes_correlativas)):
+#      for d in range(data.dias):
+#        for t in range(data.turnos):
+#          variable_delta.append('delta'+'_'+str(data.ordenes_correlativas[n][0])+'_'+str(d)+'_'+str(t))
 
-    my_problem.variables.add(obj = [0.0] * len(variable_delta), lb = [0]*len(variable_delta), ub = [1]*len(variable_delta), types= ['B']*len(variable_delta), names = variable_delta)
+#    my_problem.variables.add(obj = [0.0] * len(variable_delta), lb = [0]*len(variable_delta), ub = [1]*len(variable_delta), types= ['B']*len(variable_delta), names = variable_delta)
 
 
     # Columna para lambda_n_d_t_j
-    variable_lambda = []
-    for n in range(len(data.ordenes_conflictivas)):
-      for d in range(data.dias):
-        for t in range(data.turnos):
-          for j in range(data.cantidad_trabajadores):
-            variable_lambda.append('lambda'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_conflictivas[n][0]))
+#    variable_lambda = []
+#    for n in range(len(data.ordenes_conflictivas)):
+#      for d in range(data.dias):
+#        for t in range(data.turnos):
+#          for j in range(data.cantidad_trabajadores):
+#            variable_lambda.append('lambda'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_conflictivas[n][0]))
 
-    my_problem.variables.add(obj = [0.0] * len(variable_lambda), lb = [0]*len(variable_lambda), ub = [1]*len(variable_lambda), types= ['B']*len(variable_lambda), names = variable_lambda)
+#    my_problem.variables.add(obj = [0.0] * len(variable_lambda), lb = [0]*len(variable_lambda), ub = [1]*len(variable_lambda), types= ['B']*len(variable_lambda), names = variable_lambda)
     
     # Columna para w_j_k
-    variables_w = []
-    for j in range(data.cantidad_trabajadores):
-      for k in range(len(data.costos)):
-        variables_w.append('w'+'_'+str(j)+'_'+str(k))
+#    variables_w = []
+#    for j in range(data.cantidad_trabajadores):
+#      for k in range(len(data.costos)):
+#        variables_w.append('w'+'_'+str(j)+'_'+str(k))
         
-    my_problem.variables.add([0.0] * len(variables_w), lb = [0]*len(variables_w), ub = [1]*len(variables_w), types= ['B']*len(variables_w), names = variables_w)
+#    my_problem.variables.add([0.0] * len(variables_w), lb = [0]*len(variables_w), ub = [1]*len(variables_w), types= ['B']*len(variables_w), names = variables_w)
 
 
     # Columna para gamma_n
