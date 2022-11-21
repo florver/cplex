@@ -168,17 +168,31 @@ def add_constraint_matrix(my_problem, data):
 
       # Restricción "Una orden de trabajo debe tener asignada sus To trabajadores en un mismo turno para poder ser resuelta"      
       
+#      for n in range(len(data.ordenes)):
+#        variables_restriccion = []
+#        for j in range(data.cantidad_trabajadores):
+#          variables_epsilon = []
+#          for d in range(data.dias):
+#            for t in range(data.turnos):
+#              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
+#              variables_epsilon.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
+#              values = [1]*len(variables_restriccion) + [-1] * (data.ordenes[n].trabajadores_necesarios) * len(variables_epsilon)
+#              row = [variables_restriccion + variables_epsilon, values]
+#              my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])            
+
       for n in range(len(data.ordenes)):
         variables_restriccion = []
+        variables_gamma = []
         for j in range(data.cantidad_trabajadores):
-          variables_epsilon = []
           for d in range(data.dias):
             for t in range(data.turnos):
               variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
-              variables_epsilon.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
-              values = [1]*len(variables_restriccion) + [-1] * (data.ordenes[n].trabajadores_necesarios) * len(variables_epsilon)
-              row = [variables_restriccion + variables_epsilon, values]
-              my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])            
+              values_restriccion = [1] * len(variables_restriccion)
+        variables_gamma.append('gamma'+'_'+str(n))
+        values_gamma = [-1] * (data.ordenes[n].trabajadores_necesarios) * len(variables_gamma)
+        row = [variables_restriccion + variables_gamma, values_restricion + values_gamma]
+        my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
+
 
 
 def populate_by_row(my_problem, data):
