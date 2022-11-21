@@ -142,6 +142,7 @@ def add_constraint_matrix(my_problem, data):
         row = [variables_gamma + variables_epsilon, values]
         my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
 
+      
       # Restricción: No se pueden realizar varias ordenes en un mismo turno si comparten trabajadores             
 
      
@@ -208,6 +209,30 @@ def add_constraint_matrix(my_problem, data):
         my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
 
 
+      # Restricción "Ninǵun trabajador puede trabajar los 6 días de la semana"
+
+      for j in range(data.cantidad_trabajadores):
+        variables_restriccion_z = []
+        for d in range(data.dias):
+          variables_restriccion_z.append('z'+'_'+str(j)+'_'+str(d))
+          values = [1]*len(variables_restriccion_z)
+        row = [variables_restriccion_z, values]
+        my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[5.0])
+
+      for j in range(data.cantidad_trabajadores):
+        for d in range(data.dias):
+          variables_restriccion = []
+          variables_z = []
+          for t in range(data.turnos):
+            for n in range(len(data.ordenes)):
+              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
+              values_restriccion = [1]*len(variables_restriccion)
+          variables_z.append('z'+'_'+str(j)+'_'+str(d))
+          values_z = [-5] * len(variables_z)
+          row = [variables_restriccion + variables_z, values_restriccion + values_z]
+          my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[0.0])        
+
+
 
 def populate_by_row(my_problem, data):
 
@@ -255,13 +280,6 @@ def populate_by_row(my_problem, data):
     my_problem.variables.add(obj = [0.0] * len(variables_beneficios), lb =[0]*len(variables_beneficios) , ub = [1]*len(variables_beneficios)
                              , types=['B']*len(variables_beneficios), names = variables_beneficios)
 
-    # Columna para Z_j_d
-#    variable_z = []
-#    for j in range(data.cantidad_trabajadores):
-#      for d in range(data.dias):
-#        variable_z.append('z'+'_'+str(j)+'_'+str(d))
-
-#    my_problem.variables.add(obj = [0.0] * len(variable_z), lb = [0]*len(variable_z), ub = [1]*len(variable_z), types= ['B']*len(variable_z), names = variable_z)
 
 
     # Columna para delta_n_d_t
@@ -310,6 +328,15 @@ def populate_by_row(my_problem, data):
           variables_epsilon.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
 
     my_problem.variables.add([0.0] * len(variables_epsilon), lb = [0] * len(variables_epsilon), ub = [1]*len(variables_epsilon), types= ['B']*len(variables_epsilon), names = variables_epsilon)
+
+
+    # Columna para Z_j_d
+    variable_z = []
+    for j in range(data.cantidad_trabajadores):
+      for d in range(data.dias):
+        variable_z.append('z'+'_'+str(j)+'_'+str(d))
+
+    my_problem.variables.add(obj = [0.0] * len(variable_z), lb = [0]*len(variable_z), ub = [1]*len(variable_z), types= ['B']*len(variable_z), names = variable_z)
 
 
     # Seteamos direccion del problema
