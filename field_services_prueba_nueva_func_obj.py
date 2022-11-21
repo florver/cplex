@@ -275,6 +275,34 @@ def add_constraint_matrix(my_problem, data):
         my_problem.linear_constraints.add(lin_expr=[row], senses=["E"], rhs=[0.0])
 
 
+      # Restricción “Hay pares de órdenes de trabajo que no pueden ser satisfechas en turnos consecutivos de un mismo trabajador”
+
+      for j in range(data.cantidad_trabajadores):
+        for d in range(data.dias):
+          for t in range(data.turnos-1):
+            for n in range(len(data.ordenes_conflictivas)):
+              variables_restriccion_1 = []
+              variables_restriccion_1.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_conflictivas[n][0]))
+              values_1 = [1] * len(variables_restriccion_1)
+              variables_restriccion_2 = []
+              variables_restriccion_2.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t+1)+'_'+str(data.ordenes_conflictivas[n][1]))
+              values_2 = [-1] * len(variables_restriccion_2)
+            row = [variables_restriccion_1 + variables_restriccion_2, values_1 + values_2]
+            my_problem.linear_constraints.add(lin_expr=[row], senses=["L"], rhs=[1])
+
+          for t in range(data.turnos - 1,0,-1):
+            for n in range(len(data.ordenes_conflictivas)):
+              variables_restriccion_1 = []
+              variables_restriccion_1.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_conflictivas[n][0]))
+              values_1 = [1] * len(variables_restriccion_1)
+              variables_restriccion_2 = []
+              variables_restriccion_2.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t-1)+'_'+str(data.ordenes_conflictivas[n][1]))
+              values_2 = [-1] * len(variables_restriccion_2)
+            row = [variables_restriccion_1 + variables_restriccion_2, values_1 + values_2]
+            my_problem.linear_constraints.add(lin_expr=[row], senses=["L"], rhs=[1])
+
+
+
 def populate_by_row(my_problem, data):
 
     # Definimos y agregamos las variables.
