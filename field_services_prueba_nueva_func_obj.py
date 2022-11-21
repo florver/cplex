@@ -108,26 +108,6 @@ def get_instance_data():
 
 
 def add_constraint_matrix(my_problem, data):
-    
-    # Restriccion generica
-    #indices = 
-    #values = []
-    #row = [indices,values]
-    #my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[])
-   
-
-      # Restricción una orden no se puede hacer 2 veces
-
-#      for n in range(len(data.ordenes)):
-#        for j in range(data.cantidad_trabajadores):
-#          variables_restriccion = []
-#          for d in range(data.dias):
-#            for t in range(data.turnos):
-#              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
-#              values = [1]*len(variables_restriccion)
-#              row = [variables_restriccion, values]
-#              my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
-
 
       # Restricción una orden se puede hacer en un único turno y día (equivalencia de gammas y epsilon).
 
@@ -170,30 +150,9 @@ def add_constraint_matrix(my_problem, data):
             row = [variables_restriccion + variables_epsilon, values_restriccion + values_epsilon]
             my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
 
-      
-#      for d in range(data.dias):
-#        for t in range(data.turnos):
-#          variables_epsilon = []
-#          for n in range(len(data.ordenes)):
-#            variables_epsilon.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
-#            values = [1]*len(variables_epsilon)
-#            row = [variables_epsilon, values]
-#            my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
-
 
       # Restricción "Una orden de trabajo debe tener asignada sus To trabajadores en un mismo turno para poder ser resuelta"      
-      
-#      for n in range(len(data.ordenes)):
-#        variables_restriccion = []
-#        for j in range(data.cantidad_trabajadores):
-#          variables_epsilon = []
-#          for d in range(data.dias):
-#            for t in range(data.turnos):
-#              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
-#              variables_epsilon.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
-#              values = [1]*len(variables_restriccion) + [-1] * (data.ordenes[n].trabajadores_necesarios) * len(variables_epsilon)
-#              row = [variables_restriccion + variables_epsilon, values]
-#              my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])            
+
 
       for n in range(len(data.ordenes)):
         variables_restriccion = []
@@ -306,6 +265,7 @@ def add_constraint_matrix(my_problem, data):
 def populate_by_row(my_problem, data):
 
     # Definimos y agregamos las variables.
+
     coeficientes_beneficio = []
 #    for j in range(data.cantidad_trabajadores): 
 #      for d in range(data.dias):
@@ -321,10 +281,7 @@ def populate_by_row(my_problem, data):
       variables_gamma.append('gamma'+'_'+str(n))
     
     
-#    variables_costos = []
-#    for j in range(data.cantidad_trabajadores):
-#      for k in range(len(data.costos)):
-#        variables_costos.append('x'+'_'+str(j)+'_'+str(k))
+
         
 #    my_problem.variables.add(obj = coeficientes_funcion_objetivo, lb =[0]*len(coeficientes_beneficio) + [0]*len(coeficientes_costo), ub = [1]*len(coeficientes_beneficio) + list(np.tile(data.trozos, data.cantidad_trabajadores))
 #                             , types=['B']*len(coeficientes_beneficio) + ['I']*len(coeficientes_costo), names = (variables_gamma + variables_costos))
@@ -334,6 +291,8 @@ def populate_by_row(my_problem, data):
     my_problem.variables.add(obj = coeficientes_funcion_objetivo, lb =[0]*len(coeficientes_beneficio), ub = [1]*len(coeficientes_beneficio)
                              , types=['B']*len(coeficientes_beneficio), names = variables_gamma)
     
+
+
 
 
 
@@ -351,25 +310,7 @@ def populate_by_row(my_problem, data):
 
 
 
-    # Columna para delta_n_d_t
-#    variable_delta = []
-#    for n in range(len(data.ordenes_correlativas)):
-#      for d in range(data.dias):
-#        for t in range(data.turnos):
-#          variable_delta.append('delta'+'_'+str(data.ordenes_correlativas[n][0])+'_'+str(d)+'_'+str(t))
 
-#    my_problem.variables.add(obj = [0.0] * len(variable_delta), lb = [0]*len(variable_delta), ub = [1]*len(variable_delta), types= ['B']*len(variable_delta), names = variable_delta)
-
-
-    # Columna para lambda_n_d_t_j
-#    variable_lambda = []
-#    for n in range(len(data.ordenes_conflictivas)):
-#      for d in range(data.dias):
-#        for t in range(data.turnos):
-#          for j in range(data.cantidad_trabajadores):
-#            variable_lambda.append('lambda'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_conflictivas[n][0]))
-
-#    my_problem.variables.add(obj = [0.0] * len(variable_lambda), lb = [0]*len(variable_lambda), ub = [1]*len(variable_lambda), types= ['B']*len(variable_lambda), names = variable_lambda)
     
     # Columna para w_j_k
 #    variables_w = []
@@ -380,15 +321,8 @@ def populate_by_row(my_problem, data):
 #    my_problem.variables.add([0.0] * len(variables_w), lb = [0]*len(variables_w), ub = [1]*len(variables_w), types= ['B']*len(variables_w), names = variables_w)
 
 
-    # Columna para gamma_n
 
-   # variables_gamma = []
-   # for n in range(len(data.ordenes)):
-   #   variables_gamma.append('gamma'+'_'+str(n))
-
-   # my_problem.variables.add([0.0] * len(variables_gamma), lb = [0] * len(variables_gamma), ub = [1]*len(variables_gamma), types= ['B']*len(variables_gamma), names = variables_gamma)
-
-    # Columna para epsilon_n
+    # Columna para epsilon_d_t_n
 
     variables_epsilon = []
     for d in range(data.dias):
@@ -406,6 +340,18 @@ def populate_by_row(my_problem, data):
         variable_z.append('z'+'_'+str(j)+'_'+str(d))
 
     my_problem.variables.add(obj = [0.0] * len(variable_z), lb = [0]*len(variable_z), ub = [1]*len(variable_z), types= ['B']*len(variable_z), names = variable_z)
+
+
+
+    # Columna para x_j_k (cantidad de ordenes por trabajador y tramo)  
+    variables_costos = []
+    for j in range(data.cantidad_trabajadores):
+      for k in range(len(data.costos)):
+        variables_costos.append('x'+'_'+str(j)+'_'+str(k))
+
+    coeficientes_costo = list(np.tile(data.costos, data.cantidad_trabajadores)) 
+    my_problem.variables.add(obj = coeficientes_costo, lb = [0]*len(coeficientes_costo), ub = list(np.tile(data.trozos, data.cantidad_trabajadores))
+                            , types= ['I']*len(coeficientes_costo), names = variables_costos)
 
 
     # Seteamos direccion del problema
