@@ -152,8 +152,8 @@ def add_constraint_matrix(my_problem, data):
             for n in range(len(data.ordenes)):
               variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
               values = [1]*len(variables_restriccion)
-              row = [variables_restriccion, values]
-              my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
+            row = [variables_restriccion, values]
+            my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
 
       
 #      for d in range(data.dias):
