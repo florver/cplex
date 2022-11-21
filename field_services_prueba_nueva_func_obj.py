@@ -189,7 +189,7 @@ def add_constraint_matrix(my_problem, data):
               variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
               values_restriccion = [1] * len(variables_restriccion)
         variables_gamma.append('gamma'+'_'+str(n))
-        values_gamma = [-1] * (data.ordenes[n].trabajadores_necesarios) * len(variables_gamma)
+        values_gamma = [(-1) * (data.ordenes[n].trabajadores_necesarios) * len(variables_gamma)]
         row = [variables_restriccion + variables_gamma, values_restriccion + values_gamma]
         my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
 
