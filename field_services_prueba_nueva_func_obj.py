@@ -246,6 +246,35 @@ def add_constraint_matrix(my_problem, data):
           my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[4.0])
 
 
+    # Restricción “Existen algunos pares de  ́ordenes de trabajo correlativas” 
+      for d in range(data.dias):
+        for t in range(data.turnos-1):
+          for n in range(len(data.ordenes_correlativas)):
+            variables_epsilon_1 = []
+            variables_epsilon_1.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_correlativas[n][0]))
+            values_epsilon_1 = [1]*len(variables_epsilon_1)
+            variables_epsilon_2 = []
+            variables_epsilon_2.append('e'+'_'+str(d)+'_'+str(t+1)+'_'+str(data.ordenes_correlativas[n][1]))
+            values_epsilon_2 = [-1]*len(variables_epsilon_2)
+            row = [variables_epsilon_1 + variables_epsilon_2, values_epsilon_1 + values_epsilon_2]
+            my_problem.linear_constraints.add(lin_expr=[row], senses=["E"], rhs=[0.0])
+            
+      # La orden correlativa nro 1 no se puede realizar el último de un día
+        variables_epsilon_1 = []
+        variables_epsilon_1.append('e'+'_'+str(d)+'_'+str(data.turnos-1)+'_'+str(data.ordenes_correlativas[n][0]))
+        values_epsilon_1 = [1]*len(variables_epsilon_1)
+        row = [variables_epsilon_1,values_epsilon_1]
+        my_problem.linear_constraints.add(lin_expr=[row], senses=["E"], rhs=[0.0])
+
+      # La orden correlativa nro 2 no se puede realizar en el primer turno del día  
+
+        variables_epsilon_2 = []
+        variables_epsilon_2.append('e'+'_'+str(d)+'_'+str(0)+'_'+str(data.ordenes_correlativas[n][1]))
+        values_epsilon_2 = [1]*len(variables_epsilon_2)  
+        row = [variables_epsilon_2,values_epsilon_2]
+        my_problem.linear_constraints.add(lin_expr=[row], senses=["E"], rhs=[0.0])
+
+
 def populate_by_row(my_problem, data):
 
     # Definimos y agregamos las variables.
