@@ -163,10 +163,10 @@ def populate_by_row(my_problem, data):
 #    for j in range(data.cantidad_trabajadores): 
 #      for d in range(data.dias):
 #        for t in range(data.turnos):
-          for n in range(len(data.ordenes)):
-            coeficientes_beneficio.append(data.ordenes[n].beneficio)
+    for n in range(len(data.ordenes)):
+      coeficientes_beneficio.append(data.ordenes[n].beneficio)
     coeficientes_costo = list(np.tile(data.costos, data.cantidad_trabajadores))
-    coeficientes_funcion_objetivo = coeficientes_beneficio + coeficientes_costo)
+    coeficientes_funcion_objetivo = coeficientes_beneficio + coeficientes_costo
 
     variables_gamma = []
     for n in range(len(data.ordenes)):
