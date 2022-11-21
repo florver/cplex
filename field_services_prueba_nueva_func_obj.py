@@ -187,7 +187,7 @@ def populate_by_row(my_problem, data):
     my_problem.variables.add(obj = coeficientes_funcion_objetivo, lb =[0]*len(coeficientes_beneficio) + [0]*len(coeficientes_costo), ub = [1]*len(coeficientes_beneficio) + list(np.tile(data.trozos, data.cantidad_trabajadores))
                              , types=['B']*len(coeficientes_beneficio) + ['I']*len(coeficientes_costo), names = (variables_gamma + variables_costos))
     
-    my_problem.variables.add(obj = [0.0] * len(variables_beneficios), lb =[0]*len(variables_beneficios) , ub = [1]*len(variables_beneficio)
+    my_problem.variables.add(obj = [0.0] * len(variables_beneficios), lb =[0]*len(variables_beneficios) , ub = [1]*len(variables_beneficios)
                              , types=['B']*len(variables_beneficios), names = variables_beneficios)
 
 #    my_problem.variables.add(obj = coeficientes_funcion_objetivo, lb =[0]*len(coeficientes_beneficio), ub = [1]*len(coeficientes_beneficio)
