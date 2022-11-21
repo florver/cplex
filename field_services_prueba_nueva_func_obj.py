@@ -260,26 +260,32 @@ def add_constraint_matrix(my_problem, data):
             row = [variables_restriccion_1 + variables_restriccion_2, values_1 + values_2]
             my_problem.linear_constraints.add(lin_expr=[row], senses=["L"], rhs=[1])
 
-      # Equivalencia entre v y x
-  
-      for j in range(data.cantidad_trabajadores):
-            variables_costos_0 = []
-            variables_costos_0.append('x'+'_'+str(j)+'_'+str(0))
-            variables_costos_1 = []
-            variables_costos_1.append('x'+'_'+str(j)+'_'+str(1))
-            variables_costos_2 = []
-            variables_costos_2.append('x'+'_'+str(j)+'_'+str(2))
-            variables_costos_3 = []
-            variables_costos_3.append('x'+'_'+str(j)+'_'+str(3))
-            variables_restriccion = [] 
-            for d in range(data.dias):
-              for t in range(data.turnos):
-                for n in range(len(data.ordenes)):
-                  variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
-                  values = [1]*len(variables_restriccion) + [-1]*len(variables_costos_0) + [-1]*len(variables_costos_1) + [-1]*len(variables_costos_2) + [-1]*len(variables_costos_3)
-                  row = [variables_restriccion + variables_costos_0 + variables_costos_1 + variables_costos_2 + variables_costos_3, values]
-                  my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
 
+      #Equivalencia entre x y v
+
+      for j in range(trabajadores):
+        variables_x_j = []
+        variables_restriccion = []
+        for t in range(turnos):
+          for d in range(dias):
+            for n in range(cant_ordenes):
+              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
+              values_restriccion = [1] * len(variables_restriccion)
+        variables_x_j.append('x'+'_'+str(j))
+        values_x_j = [-1] * len(variables_x_j)        
+        row = [variables_restriccion + variables_x_j, values_restriccion + values_x_j]
+        my_problem.linear_constraints.add(lin_expr=[row], senses=["E"], rhs=[0.0])
+
+      for j in range(trabajadores):
+        variables_x_j = []
+        variables_x_j_k = []
+        for k in range(len(costos)):
+          variables_x_j_k.append('x'+'_'+str(j)+'_'+str(k))
+          values_x_j_k = [1] * len(variables_x_j_k)
+        variables_x_j.append('x'+'_'+str(j))
+        values_x_j = [-1] * len(variables_x_j)
+        row = [variables_x_j_k + variables_x_j, values_x_j_k + values_x_j]
+        my_problem.linear_constraints.add(lin_expr=[row], senses=["E"], rhs=[0.0])
 
 def populate_by_row(my_problem, data):
 
@@ -372,6 +378,16 @@ def populate_by_row(my_problem, data):
     my_problem.variables.add(obj = coeficientes_costo, lb = [0]*len(coeficientes_costo), ub = list(np.tile(data.trozos, data.cantidad_trabajadores))
                             , types= ['I']*len(coeficientes_costo), names = variables_costos)
 
+
+    # Columna para x_j (suma de ordenes por trabajador)
+
+    variables_x_j = []
+    for j in range(data.cantidad_trabajadores):
+        variables_x_j.append('x'+'_'+str(j))
+
+
+    my_problem.variables.add(obj = [0.0] * len(variables_x_j), lb = [0]*len(variables_x_j), ub = [data.cantidad_ordenes] * data.cantidad_trabajadores
+                            , types= ['I']*len(variables_x_j), names = variables_x_j)
 
     # Seteamos direccion del problema
     my_problem.objective.set_sense(my_problem.objective.sense.maximize)
