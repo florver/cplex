@@ -142,7 +142,18 @@ def add_constraint_matrix(my_problem, data):
             row = [variables_gamma + variables_epsilon, values]
             my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
 
-      # Restricción que no se haga 2 ordenes en mismo turno y día             
+      # Restricción: No se pueden realizar varias ordenes en un mismo turno si comparten trabajadores             
+
+     
+      for j in range(data.cantidad_trabajadores):
+        for d in range(data.dias):
+          for t in range(data.turnos):
+            variables_restriccion = []
+            for n in range(len(data.ordenes)):
+              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
+              values = [1]*len(variables_restriccion)
+              row = [variables_restriccion, values]
+              my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
 
       
 #      for d in range(data.dias):
@@ -187,12 +198,6 @@ def populate_by_row(my_problem, data):
     for n in range(len(data.ordenes)):
       variables_gamma.append('gamma'+'_'+str(n))
     
-    variables_beneficios = []
-    for j in range(data.cantidad_trabajadores): 
-      for d in range(data.dias):
-        for t in range(data.turnos):
-          for n in range(len(data.ordenes)):
-            variables_beneficios.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
     
 #    variables_costos = []
 #    for j in range(data.cantidad_trabajadores):
@@ -206,6 +211,19 @@ def populate_by_row(my_problem, data):
 
     my_problem.variables.add(obj = coeficientes_funcion_objetivo, lb =[0]*len(coeficientes_beneficio), ub = [1]*len(coeficientes_beneficio)
                              , types=['B']*len(coeficientes_beneficio), names = variables_gamma)
+    
+
+
+
+    # Columna para v_j_d_t_n
+    variables_beneficios = []
+    for j in range(data.cantidad_trabajadores): 
+      for d in range(data.dias):
+        for t in range(data.turnos):
+          for n in range(len(data.ordenes)):
+            variables_beneficios.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
+
+
     my_problem.variables.add(obj = [0.0] * len(variables_beneficios), lb =[0]*len(variables_beneficios) , ub = [1]*len(variables_beneficios)
                              , types=['B']*len(variables_beneficios), names = variables_beneficios)
 
