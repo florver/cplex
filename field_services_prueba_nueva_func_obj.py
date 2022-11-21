@@ -263,12 +263,12 @@ def add_constraint_matrix(my_problem, data):
 
       #Equivalencia entre x y v
 
-      for j in range(trabajadores):
+      for j in range(data.cantidad_trabajadores):
         variables_x_j = []
         variables_restriccion = []
-        for t in range(turnos):
-          for d in range(dias):
-            for n in range(cant_ordenes):
+        for t in range(data.turnos):
+          for d in range(data.dias):
+            for n in range(len(data.ordenes)):
               variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
               values_restriccion = [1] * len(variables_restriccion)
         variables_x_j.append('x'+'_'+str(j))
@@ -276,10 +276,10 @@ def add_constraint_matrix(my_problem, data):
         row = [variables_restriccion + variables_x_j, values_restriccion + values_x_j]
         my_problem.linear_constraints.add(lin_expr=[row], senses=["E"], rhs=[0.0])
 
-      for j in range(trabajadores):
+      for j in range(data.cantidad_trabajadores):
         variables_x_j = []
         variables_x_j_k = []
-        for k in range(len(costos)):
+        for k in range(len(data.costos)):
           variables_x_j_k.append('x'+'_'+str(j)+'_'+str(k))
           values_x_j_k = [1] * len(variables_x_j_k)
         variables_x_j.append('x'+'_'+str(j))
