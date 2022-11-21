@@ -131,16 +131,16 @@ def add_constraint_matrix(my_problem, data):
 
       # Restricción equivalencia de gammas y epsilon.
 
-      for n in range(len(data.ordenes)):
-        variables_epsilon = []
-        for d in range(data.dias):
-          for t in range(data.turnos):
-            variables_gamma = []
-            variables_gamma.append('gamma'+'_'+str(n))
-            variables_epsilon.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
-            values = [1]*len(variables_gamma) + [-1]*len(variables_epsilon)
-            row = [variables_gamma + variables_epsilon, values]
-            my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
+#      for n in range(len(data.ordenes)):
+#        variables_epsilon = []
+#        for d in range(data.dias):
+#          for t in range(data.turnos):
+#            variables_gamma = []
+#            variables_gamma.append('gamma'+'_'+str(n))
+#            variables_epsilon.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
+#            values = [1]*len(variables_gamma) + [-1]*len(variables_epsilon)
+#            row = [variables_gamma + variables_epsilon, values]
+#            my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
 
       # Restricción: No se pueden realizar varias ordenes en un mismo turno si comparten trabajadores             
 
