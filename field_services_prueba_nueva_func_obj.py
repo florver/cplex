@@ -155,6 +155,20 @@ def add_constraint_matrix(my_problem, data):
             row = [variables_restriccion, values]
             my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])
 
+
+      for t in range(data.turnos):
+        for d in range(data.dias):
+          for n in range(len(data.ordenes)):
+            variables_epsilon = []
+            variables_restriccion = []
+            for j in range(data.cantidad_trabajadores):
+              variables_restriccion.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
+              values_restriccion = [1]*len(variables_restriccion)
+            variables_epsilon.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
+            values_epsilon = [(-1) * (data.ordenes[n].trabajadores_necesarios) * len(variables_epsilon)]
+            row = [variables_restriccion + variables_epsilon, values_restriccion + values_epsilon]
+            my_problem.linear_constraints.add(lin_expr=[row], senses=['E'], rhs=[0.0])
+
       
 #      for d in range(data.dias):
 #        for t in range(data.turnos):
