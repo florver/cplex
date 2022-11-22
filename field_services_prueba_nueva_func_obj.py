@@ -367,6 +367,20 @@ def add_constraint_matrix(my_problem, data):
           my_problem.linear_constraints.add(lin_expr=[row_3], senses=['L'], rhs=[0.0])
 
 
+       # Restriccion deseable: Conflictos entre trabajadores
+
+      for t in range(data.turnos):
+        for d in range(data.dias):
+          for n in range(len(data.ordenes)):
+            for j in range(len(data.conflictos_trabajadores)): 
+              variables_restriccion_0 = []
+              variables_restriccion_1 = []
+              variables_restriccion_0.append('v'+'_'+str(data.conflictos_trabajadores[j][0])+'_'+str(d)+'_'+str(t)+'_'+str(n))
+              variables_restriccion_1.append('v'+'_'+str(data.conflictos_trabajadores[j][1])+'_'+str(d)+'_'+str(t)+'_'+str(n))
+              values_0 = [1] * len(variables_restriccion_0)
+              values_1 = [1] * len(variables_restriccion_1)
+              row = [variables_restriccion_0 + variables_restriccion_1,values_0 + values_1]
+              my_problem.linear_constraints.add(lin_expr=[row], senses=["L"], rhs=[1])
 
 
 def populate_by_row(my_problem, data):
