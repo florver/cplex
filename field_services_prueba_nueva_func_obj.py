@@ -261,6 +261,7 @@ def add_constraint_matrix(my_problem, data):
             my_problem.linear_constraints.add(lin_expr=[row], senses=["L"], rhs=[1])
 
 
+
       #Equivalencia entre x y v
 
       for j in range(data.cantidad_trabajadores):
@@ -286,6 +287,87 @@ def add_constraint_matrix(my_problem, data):
         values_x_j = [-1] * len(variables_x_j)
         row = [variables_x_j_k + variables_x_j, values_x_j_k + values_x_j]
         my_problem.linear_constraints.add(lin_expr=[row], senses=["E"], rhs=[0.0])
+
+
+    #1er tramo
+      for j in range(data.cantidad_trabajadores):
+                variables_costos = []
+                variables_costos.append('x'+'_'+str(j)+'_'+str(0))
+                variables_w = []
+                variables_w.append('w'+'_'+str(j)+'_'+str(0))
+                values_1 = [1]*len(variables_costos)
+                row_1 = [variables_costos, values_1]
+                my_problem.linear_constraints.add(lin_expr=[row_1], senses=['L'], rhs=[5.0])
+                values_2 = [5]*len(variables_w) + [-1]*len(variables_costos)
+                row_2 = [variables_w + variables_costos, values_2]
+                my_problem.linear_constraints.add(lin_expr=[row_2], senses=['L'], rhs=[0.0])
+
+
+      #2do tramo
+      for j in range(data.cantidad_trabajadores):
+                        variables_costos = []
+                        variables_costos.append('x'+'_'+str(j)+'_'+str(1))
+                        variables_w_0 = []
+                        variables_w_0.append('w'+'_'+str(j)+'_'+str(0))
+                        variables_w_1 = []
+                        variables_w_1.append('w'+'_'+str(j)+'_'+str(1))
+                        values_1 = [1]*len(variables_costos) + [-5]*len(variables_w_0)
+                        row_1 = [variables_costos + variables_w_0, values_1]
+                        my_problem.linear_constraints.add(lin_expr=[row_1], senses=['L'], rhs=[0.0])
+                        values_2 = [5]*len(variables_w_1) + [-1]*len(variables_costos)
+                        row_2 = [variables_w_1 + variables_costos, values_2]
+                        my_problem.linear_constraints.add(lin_expr=[row_2], senses=['L'], rhs=[0.0])                                      
+
+
+      #3er tramo
+      for j in range(data.cantidad_trabajadores):
+                        variables_costos = []
+                        variables_costos.append('x'+'_'+str(j)+'_'+str(2))
+                        variables_w_1 = []
+                        variables_w_1.append('w'+'_'+str(j)+'_'+str(1))
+                        variables_w_2 = []
+                        variables_w_2.append('w'+'_'+str(j)+'_'+str(2))
+                        values_1 = [1]*len(variables_costos) + [-5]*len(variables_w_1)
+                        row_1 = [variables_costos + variables_w_1, values_1]
+                        my_problem.linear_constraints.add(lin_expr=[row_1], senses=['L'], rhs=[0.0])
+                        values_2 = [5]*len(variables_w_2) + [-1]*len(variables_costos)
+                        row_2 = [variables_w_2 + variables_costos, values_2]
+                        my_problem.linear_constraints.add(lin_expr=[row_2], senses=['L'], rhs=[0.0])
+
+      #4to tramo
+      for j in range(data.cantidad_trabajadores):
+                        variables_costos = []
+                        variables_costos.append('x'+'_'+str(j)+'_'+str(3))
+                        variables_w_2 = []
+                        variables_w_2.append('w'+'_'+str(j)+'_'+str(2))
+                        variables_w_3 = []
+                        variables_w_3.append('w'+'_'+str(j)+'_'+str(3))
+                        values_1 = [1]*len(variables_costos) + [-15]*len(variables_w_2)
+                        row_1 = [variables_costos + variables_w_2, values_1]
+                        my_problem.linear_constraints.add(lin_expr=[row_1], senses=['L'], rhs=[0.0])
+                        values_2 = [1]*len(variables_costos)
+                        row_2 = [variables_costos, values_2]
+                        my_problem.linear_constraints.add(lin_expr=[row_2], senses=['G'], rhs=[0.0])
+
+
+        #Restricciones de w_j_k
+      
+      for j in range(data.cantidad_trabajadores):
+          variables_w = []
+          for k in range(len(data.costos)):
+            variables_w.append('w'+'_'+str(j)+'_'+str(k))
+          values_1 = [1,-1]
+          row_1 = [[variables_w[1], variables_w[0]], values_1]
+          my_problem.linear_constraints.add(lin_expr=[row_1], senses=['L'], rhs=[0.0])
+          values_2 = [1,-1]
+          row_2 = [[variables_w[2], variables_w[1]], values_2]
+          my_problem.linear_constraints.add(lin_expr=[row_2], senses=['L'], rhs=[0.0])
+          values_3 = [1,-1]
+          row_3 = [[variables_w[3], variables_w[2]], values_3]
+          my_problem.linear_constraints.add(lin_expr=[row_3], senses=['L'], rhs=[0.0])
+
+
+
 
 def populate_by_row(my_problem, data):
 
@@ -337,13 +419,7 @@ def populate_by_row(my_problem, data):
 
 
     
-    # Columna para w_j_k
-#    variables_w = []
-#    for j in range(data.cantidad_trabajadores):
-#      for k in range(len(data.costos)):
-#        variables_w.append('w'+'_'+str(j)+'_'+str(k))
-        
-#    my_problem.variables.add([0.0] * len(variables_w), lb = [0]*len(variables_w), ub = [1]*len(variables_w), types= ['B']*len(variables_w), names = variables_w)
+
 
 
 
@@ -388,6 +464,16 @@ def populate_by_row(my_problem, data):
 
     my_problem.variables.add(obj = [0.0] * len(variables_x_j), lb = [0]*len(variables_x_j), ub = [data.cantidad_ordenes] * data.cantidad_trabajadores
                             , types= ['I']*len(variables_x_j), names = variables_x_j)
+    
+
+    # Columna para w_j_k
+    
+    variables_w = []
+    for j in range(data.cantidad_trabajadores):
+      for k in range(len(data.costos)):
+        variables_w.append('w'+'_'+str(j)+'_'+str(k))
+        
+    my_problem.variables.add([0.0] * len(variables_w), lb = [0]*len(variables_w), ub = [1]*len(variables_w), types= ['B']*len(variables_w), names = variables_w)
 
     # Seteamos direccion del problema
     my_problem.objective.set_sense(my_problem.objective.sense.maximize)
