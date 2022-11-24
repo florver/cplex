@@ -38,6 +38,7 @@ class FieldWorkAssignment:
         self.turnos = 5
         self.costos = [-1000.0,-1200.0,-1400.0,-1500.0]
         self.trozos = [5.0,5.0,5.0,35.0]
+        self.nombres_variables = []
 
     def load(self,filename):
         # Abrimos el archivo.
@@ -400,7 +401,7 @@ def add_constraint_matrix(my_problem, data):
 
 
       # Restricción “Diferencia entre el trabajador con más órdenes asignadas y el trabajador con menos órdenes no puede ser mayor a 10"
-      
+
       for j in range(data.cantidad_trabajadores):
         variables_costos = []
         variables_costos.append('x'+'_'+str(j))
@@ -431,6 +432,7 @@ def populate_by_row(my_problem, data):
 
     variables_gamma = []
     for n in range(len(data.ordenes)):
+      data.nombres_variables.append('gamma'+'_'+str(n))
       variables_gamma.append('gamma'+'_'+str(n))
     
     
@@ -455,6 +457,7 @@ def populate_by_row(my_problem, data):
       for d in range(data.dias):
         for t in range(data.turnos):
           for n in range(len(data.ordenes)):
+            data.nombres_variables.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
             variables_beneficios.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(n))
 
 
@@ -475,6 +478,7 @@ def populate_by_row(my_problem, data):
     for d in range(data.dias):
       for t in range(data.turnos):
         for n in range(len(data.ordenes)):
+          data.nombres_variables.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
           variables_epsilon.append('e'+'_'+str(d)+'_'+str(t)+'_'+str(n))
 
     my_problem.variables.add([0.0] * len(variables_epsilon), lb = [0] * len(variables_epsilon), ub = [1]*len(variables_epsilon), types= ['B']*len(variables_epsilon), names = variables_epsilon)
@@ -484,6 +488,7 @@ def populate_by_row(my_problem, data):
     variable_z = []
     for j in range(data.cantidad_trabajadores):
       for d in range(data.dias):
+        data.nombres_variables.append('z'+'_'+str(j)+'_'+str(d))
         variable_z.append('z'+'_'+str(j)+'_'+str(d))
 
     my_problem.variables.add(obj = [0.0] * len(variable_z), lb = [0]*len(variable_z), ub = [1]*len(variable_z), types= ['B']*len(variable_z), names = variable_z)
@@ -494,6 +499,7 @@ def populate_by_row(my_problem, data):
     variables_costos = []
     for j in range(data.cantidad_trabajadores):
       for k in range(len(data.costos)):
+        data.nombres_variables.append('x'+'_'+str(j)+'_'+str(k))
         variables_costos.append('x'+'_'+str(j)+'_'+str(k))
 
     coeficientes_costo = list(np.tile(data.costos, data.cantidad_trabajadores)) 
@@ -505,6 +511,7 @@ def populate_by_row(my_problem, data):
 
     variables_x_j = []
     for j in range(data.cantidad_trabajadores):
+        data.nombres_variables.append('x'+'_'+str(j))
         variables_x_j.append('x'+'_'+str(j))
 
 
@@ -517,6 +524,7 @@ def populate_by_row(my_problem, data):
     variables_w = []
     for j in range(data.cantidad_trabajadores):
       for k in range(len(data.costos)):
+        data.nombres_variables.append('w'+'_'+str(j)+'_'+str(k))
         variables_w.append('w'+'_'+str(j)+'_'+str(k))
         
     my_problem.variables.add([0.0] * len(variables_w), lb = [0]*len(variables_w), ub = [1]*len(variables_w), types= ['B']*len(variables_w), names = variables_w)
@@ -559,6 +567,13 @@ def solve_lp(my_problem, data):
             #print('x_' + str(data.items[i].index) + ':' , x_variables[i])
 #      print(prob_lp.variables.get_num() + ':', x_variables[i])
             #print(x_variables[i])
+
+    with open("resultado.txt","w") as archivo:
+      for i in range(len(x_variables)):
+            # Tomamos esto como valor de tolerancia, por cuestiones numericas.
+        if x_variables[i] > TOLERANCE:
+          archivo.write(f"{data.nombres_variables[i]}:{x_variables[i]}\n")
+                # print(str(data.names[i]) + ':' , x_variables[i])        
 
 def main():
     
