@@ -549,6 +549,7 @@ def solve_lp(my_problem, data):
     # Obtenemos informacion de la solucion. Esto lo hacemos a traves de 'solution'. 
     #x_variables = my_problem.solution.get_values()
     
+    x_variables = my_problem.solution.get_values()
     objective_value = my_problem.solution.get_objective_value()
     status = my_problem.solution.get_status()
     status_string = my_problem.solution.get_status_string(status_code = status)
