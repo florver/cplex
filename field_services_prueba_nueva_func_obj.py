@@ -398,6 +398,23 @@ def add_constraint_matrix(my_problem, data):
               my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])      
 
 
+
+      # Restricción “Diferencia entre el trabajador con más órdenes asignadas y el trabajador con menos órdenes no puede ser mayor a 10"
+      
+      for j in range(data.cantidad_trabajadores):
+        variables_costos = []
+        variables_costos.append('x'+'_'+str(j))
+        for jj in range(data.cantidad_trabajadores):
+          if j != jj:
+            variables_costos_2 = []
+            variables_costos_2.append('x'+'_'+str(jj))
+            values = [1]*len(variables_costos) + [-1]*len(variables_costos_2)
+            row = [variables_costos + variables_costos_2, values]
+            my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[10])
+            my_problem.linear_constraints.add(lin_expr=[row], senses=['G'], rhs=[-10])
+          else:
+            continue
+
 def populate_by_row(my_problem, data):
 
     # Definimos y agregamos las variables.
