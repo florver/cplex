@@ -383,6 +383,21 @@ def add_constraint_matrix(my_problem, data):
               my_problem.linear_constraints.add(lin_expr=[row], senses=["L"], rhs=[1])
 
 
+       # Restriccion deseable: Hay pares de  ́ordenes de trabajo que son repetitivas por lo que ser ́ıa bueno que un mismo trabajador no sea asignado a ambas. 
+
+      for n in range(len(data.ordenes_repetitivas)):  
+        for j in range(data.cantidad_trabajadores):
+          variables_restriccion_0 = []
+          variables_restriccion_1 = []
+          for d in range(data.dias):
+            for t in range(data.turnos):
+              variables_restriccion_0.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_repetitivas[n][0]))
+              variables_restriccion_1.append('v'+'_'+str(j)+'_'+str(d)+'_'+str(t)+'_'+str(data.ordenes_repetitivas[n][1]))
+              values = [1]*len(variables_restriccion_0) + [1] * len(variables_restriccion_1)
+              row = [variables_restriccion_0 + variables_restriccion_1, values]
+              my_problem.linear_constraints.add(lin_expr=[row], senses=['L'], rhs=[1.0])      
+
+
 def populate_by_row(my_problem, data):
 
     # Definimos y agregamos las variables.
